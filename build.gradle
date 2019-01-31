@@ -32,6 +32,9 @@ dependencies {
         'lib/jars/servlet-api-2.5.jar',
         'lib/jars/jetty-all-7.0.2.v20100331.jar'
     )
+
+    compile group: 'org.json', name: 'json', version: '20180813'
+    compile group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
 }
 
 // Define the main class for the application
