@@ -8,9 +8,8 @@ public class GitHandlerTest {
    * Tests GitHandler.send_notification by sending a well-known email
    * @author Kartal Kaan Bozdoğan
    */
-
   @Test
-  public void testSendNotification() {
+  public void testSendNotificationSuccess() {
     /*
     GitEvent event = new GitEvent();
     event.pusherName = "kartal";
@@ -20,4 +19,19 @@ public class GitHandlerTest {
     assertTrue(gitHandler.send_notification("Testing... Testing..."));
     */
  }
+
+  /**
+   * Tests GitHandler.send_notification by attempting to send an email to an invalid address.
+   * @author Kartal Kaan Bozdoğan
+   */
+  @Test
+  public void testSendNotificationFail() {
+    GitEvent event = new GitEvent();
+    event.pusherName = "kartal";
+    event.pusherEmail = "bozdog ankth.se";
+    event.branchName = "Mail test";
+    GitHandler gitHandler = new GitHandler(event);
+    assertFalse(gitHandler.send_notification("Testing... Testing..."));
+ }
+
 }
