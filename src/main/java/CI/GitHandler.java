@@ -23,14 +23,14 @@ public class GitHandler{
             // Try and pull the branch
             // Try and build the branch
             // Execute the Test suite.
-            // Send notification 
+            // Send notification
   }
 
   /**
   * Pulls the branch provided by a GitEvent object.
   * @param G - GitEvent object containing all information about the event.
   */
-  private static void pull_branch(GitEvent G){
+  public static void pull_branch(GitEvent G){
     // TODO
   }
 
@@ -38,9 +38,17 @@ public class GitHandler{
   * Executes the automated tests
   * @param G - GitEvent object containing all information about the event.
   */
-  private static void start_tests(GitEvent G){
+  public static void start_tests(GitEvent G){
     // send notification about the results
     // TODO
+  }
+
+  /**
+  * Attempts to build the pulled branch locally
+  * @param G - GitEvent object containing all information about the event.  
+  */
+  public static void build_branch(GitEvent G){
+
   }
 
   /**
