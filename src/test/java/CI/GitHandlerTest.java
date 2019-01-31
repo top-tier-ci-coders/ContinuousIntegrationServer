@@ -26,10 +26,10 @@ public class GitHandlerTest {
    */
   @Test
   public void testSendNotificationFail() {
-    GitEvent event = new GitEvent();
-    event.pusherName = "kartal";
-    event.pusherEmail = "bozdog ankth.se";
-    event.branchName = "Mail test";
+    GitEvent event = new GitEvent("","");
+    event.setPusherName("kartal");
+    event.setPusherEmail("bozdog ankth.se");
+    event.setBranchName("Mail test");
     GitHandler gitHandler = new GitHandler(event);
     assertFalse(gitHandler.send_notification("Testing... Testing..."));
  }

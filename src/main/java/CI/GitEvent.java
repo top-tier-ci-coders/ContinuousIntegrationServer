@@ -58,5 +58,25 @@ public class GitEvent
     public Boolean getValidEvent() {
         return this.validEvent;
     }
+
+	public void setPusherName(String pusherName) {
+        this.pusherName = pusherName;
+    }
+
+    public void setPusherEmail(String pusherEmail) {
+        this.pusherEmail = pusherEmail;
+    }
+    
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
+    public void setValidEvent(Boolean validEvent) {
+        this.validEvent = validEvent;
+    }
 }
 
