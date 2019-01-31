@@ -5,15 +5,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.util.*;
-import javax.mail.*;  
-import javax.mail.internet.*;  
-import javax.activation.*;  
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 import java.io.IOException;
+import java.io.File;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+
+import java.lang.Runtime;
 
 public class GitHandler{
   private GitEvent G; // GitEvent object containing all information about the event.
@@ -40,8 +43,30 @@ public class GitHandler{
   * @return - The path to the pulled branch.
   */
   public String pull_branch(){
-    // TODO
-    return "";
+    Random rn = new Random();
+    int identifier = rn.nextInt();
+    String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
+    String Folder = "~/builds-CI/" + identifier;
+    try{
+      // Clone the repo to a new folder in the home directory
+      String args[] = {"bash", "-c", "git clone " + URL + " " + Folder};
+      Process process = Runtime.getRuntime().exec(args);
+      String args2[] = {"bash", "-c", "cd " + Folder};
+      Process cd = Runtime.getRuntime().exec(args2);
+      cd.waitFor();
+      // Step into the branch
+      String remoteBranch = "origin/"+G.branchName;
+      String args3[] = {"bash", "-c", "git checkout -t "+ remoteBranch};
+      Process process3 = Runtime.getRuntime().exec(args3);
+      process3.waitFor();
+      //System.out.println("bash -c \"git clone " + URL + " " + Folder + "\"");
+      if (process.waitFor() == 0){
+        return Folder;
+      }
+    }catch(Exception e){
+      return null;
+    }
+    return null;
   }
 
   /**
@@ -77,18 +102,18 @@ public class GitHandler{
 
     Properties properties = System.getProperties();
     properties.setProperty("smtp.kth.se", host);
-    Session session = Session.getDefaultInstance(properties);  
-      
-    try{  
-        MimeMessage mimeMessage = new MimeMessage(session);  
-        mimeMessage.setFrom(new InternetAddress(from));  
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));  
-        mimeMessage.setSubject("CI Message");  
+    Session session = Session.getDefaultInstance(properties);
+
+    try{
+        MimeMessage mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(from));
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));
+        mimeMessage.setSubject("CI Message");
         mimeMessage.setText(message);
 
-        Transport.send(mimeMessage);  
+        Transport.send(mimeMessage);
         return true;
-      
+
     }catch (MessagingException mex) {
         mex.printStackTrace();
         return false;
