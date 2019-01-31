@@ -50,13 +50,22 @@ public class GitHandler{
     return false;
   }
 
-  /**
+  /** 
   * Attempts to build the pulled branch locally
   * @param path - The path to where the cloned branch is located
-  * @param buildIndex - the unique build index for the build
   * @return - True if build was successful, false if not.
+  * @author Marcus Östling
   */
-  public boolean build_branch(String path, int buildIndex){
+  public boolean build_branch(String path){
+    try {
+      Process process = Runtime.getRuntime().exec(path+"/gradlew build -x test");
+      if (process.waitFor() == 0)
+        return true;
+      else
+        return false;
+    } catch(Exception e) {
+      // Build failed
+    }
     return false;
   }
 
