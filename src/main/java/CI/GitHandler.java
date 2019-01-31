@@ -11,52 +11,63 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class GitHandler{
+  private GitEvent G; // GitEvent object containing all information about the event.
 
+  GitHandler(GitHandler G){
+    this.G = G;
+  }
 
   /**
-  * Handles
-  * @param G - GitEvent object containing all information about the event.
+  * Handles an push event by calling all individual functions handling a step each.
+  * Meaning, pull, build, test and notify.
   */
-  public static void request_push(GitEvent G){
-              // TODO
-            // Called by request_push
-            // Try and pull the branch
-            // Try and build the branch
-            // Execute the Test suite.
-            // Send notification
+  public void request_push(){
+        // TODO
+      // Called by request_push
+      // Try and pull the branch
+      // Try and build the branch
+      // Execute the Test suite.
+      // Send notification
   }
 
   /**
   * Pulls the branch provided by a GitEvent object.
-  * @param G - GitEvent object containing all information about the event.
+  * @return - The path to the pulled branch.
   */
-  public static void pull_branch(GitEvent G){
+  public String pull_branch(){
     // TODO
+    return "";
   }
 
   /**
   * Executes the automated tests
-  * @param G - GitEvent object containing all information about the event.
+  * @param path - The local path to the script starting the tests
+  * @return - True if tests went through, false if not.
   */
-  public static void start_tests(GitEvent G){
+  public boolean start_tests(String path){
     // send notification about the results
     // TODO
+    return false;
   }
 
   /**
   * Attempts to build the pulled branch locally
-  * @param G - GitEvent object containing all information about the event.  
+  * @param path - The path to where the cloned branch is located
+  * @param buildIndex - the unique build index for the build
+  * @return - True if build was successful, false if not.
   */
-  public static void build_branch(GitEvent G){
-
+  public boolean build_branch(String path, int buildIndex){
+    return false;
   }
 
   /**
   * Notifies collaborators of the status of certain requests
-  * @param G - GitEvent object containing all information about the event.
+  * @param message - The message to send
+  * @return - True if message was send, false if not.
   */
-  public static void send_notification(GitEvent G){
-              // TODO
+  public boolean send_notification(String message){
+    // TODO
+    return false;
   }
 
 
