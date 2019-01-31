@@ -6,7 +6,6 @@ package CI;
  */   
 public class GitEvent
 {
-	public EventType eventType;
 	public String pusherName;
 	public String pusherEmail;
 	public String branchName;
