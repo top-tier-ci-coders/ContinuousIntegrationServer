@@ -4,6 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
+import java.util.*;
+import javax.mail.*;  
+import javax.mail.internet.*;  
+import javax.activation.*;  
+
 import java.io.IOException;
 
 import org.eclipse.jetty.server.Server;
@@ -70,14 +75,32 @@ public class GitHandler{
   }
 
   /**
-  * Notifies collaborators of the status of certain requests
+  * Notifies the pusher of the status of certain requests
+  * @author Kartal Kaan Bozdoğan
   * @param message - The message to send
   * @return - True if message was send, false if not.
   */
   public boolean send_notification(String message){
-    // TODO
-    return false;
+    String from = "top-tier-ci@gmail.com";
+    String host = "localhost";
+
+    Properties properties = System.getProperties();
+    properties.setProperty("smtp.kth.se", host);
+    Session session = Session.getDefaultInstance(properties);  
+      
+    try{  
+        MimeMessage mimeMessage = new MimeMessage(session);  
+        mimeMessage.setFrom(new InternetAddress(from));  
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));  
+        mimeMessage.setSubject("CI Message");  
+        mimeMessage.setText(message);
+
+        Transport.send(mimeMessage);  
+        return true;
+      
+    }catch (MessagingException mex) {
+        mex.printStackTrace();
+        return false;
+    }
   }
-
-
 }
