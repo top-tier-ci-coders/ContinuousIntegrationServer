@@ -82,7 +82,7 @@ public class GitHandler{
     try{  
         MimeMessage mimeMessage = new MimeMessage(session);  
         mimeMessage.setFrom(new InternetAddress(from));  
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));  
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));  
         mimeMessage.setSubject("CI Message");  
         mimeMessage.setText(message);
 

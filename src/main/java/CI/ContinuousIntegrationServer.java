@@ -5,6 +5,9 @@ import javax.servlet.ServletException;
 
 import java.io.IOException;
 
+import java.util.Enumeration;
+import java.util.stream.Collectors;
+
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -21,11 +24,18 @@ public class ContinuousIntegrationServer extends AbstractHandler
             HttpServletResponse response) 
             throws IOException, ServletException
         {
+            String eventType = "";
+            for (Enumeration<String> e = request.getHeaders("X-GitHub-Event"); e.hasMoreElements();) {
+                eventType = e.nextElement();
+            }
+
+			String jsonStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+
+			GitEvent gitEvent = new GitEvent(eventType, jsonStr);
+			
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
-
-            System.out.println(target);
 
             // here you do all the continuous integration tasks
             // for example
