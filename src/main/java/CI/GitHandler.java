@@ -13,7 +13,7 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 public class GitHandler{
   private GitEvent G; // GitEvent object containing all information about the event.
 
-  GitHandler(GitHandler G){
+  GitHandler(GitEvent G){
     this.G = G;
   }
 
