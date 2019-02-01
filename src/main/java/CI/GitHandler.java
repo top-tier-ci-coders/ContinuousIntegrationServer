@@ -39,28 +39,30 @@ public class GitHandler{
   }
 
   /**
-  * Pulls the branch provided by a GitEvent object.
+  * Pulls the branch provided by a GitEvent object and switches to it.
+  * @author Andreas Gylling, Philippa Örnell
   * @return - The path to the pulled branch.
   */
   public String pull_branch(){
+    // Creates a random number, used for folder name. Prevents duplicate issues.
     Random rn = new Random();
     int identifier = rn.nextInt();
+    // URL to our CI repo
     String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
+    // Path where we want to build our branch later
     String Folder = "~/builds-CI/" + identifier;
     try{
-      // Clone the repo to a new folder in the home directory
+      // Clone the repo to a new folder in the Folder directory
       String args[] = {"bash", "-c", "git clone " + URL + " " + Folder};
       Process process = Runtime.getRuntime().exec(args);
-      String args2[] = {"bash", "-c", "cd " + Folder};
-      Process cd = Runtime.getRuntime().exec(args2);
-      cd.waitFor();
-      // Step into the branch
-      String remoteBranch = "origin/"+G.branchName;
-      String args3[] = {"bash", "-c", "git checkout -t "+ remoteBranch};
-      Process process3 = Runtime.getRuntime().exec(args3);
-      process3.waitFor();
-      //System.out.println("bash -c \"git clone " + URL + " " + Folder + "\"");
-      if (process.waitFor() == 0){
+      // Wait for the thread to terminate
+      int waitFor = process.waitFor();
+      // Checkout the branch command. -t used for fetching remote branches.
+      String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.branchName;
+      String args2[] = {"bash", "-c", changeBranch};
+      Process process2 = Runtime.getRuntime().exec(args2);
+      int process2Wait = process2.waitFor();
+      if (waitFor == 0){ // If first command terminated properly, return the path
         return Folder;
       }
     }catch(Exception e){
