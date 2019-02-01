@@ -5,15 +5,18 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 
 import java.util.*;
-import javax.mail.*;  
-import javax.mail.internet.*;  
-import javax.activation.*;  
+import javax.mail.*;
+import javax.mail.internet.*;
+import javax.activation.*;
 
 import java.io.IOException;
+import java.io.File;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+
+import java.lang.Runtime;
 
 public class GitHandler{
   private GitEvent G; // GitEvent object containing all information about the event.
@@ -36,12 +39,36 @@ public class GitHandler{
   }
 
   /**
-  * Pulls the branch provided by a GitEvent object.
+  * Pulls the branch provided by a GitEvent object and switches to it.
+  * @author Andreas Gylling, Philippa Örnell
   * @return - The path to the pulled branch.
   */
   public String pull_branch(){
-    // TODO
-    return "";
+    // Creates a random number, used for folder name. Prevents duplicate issues.
+    Random rn = new Random();
+    int identifier = rn.nextInt();
+    // URL to our CI repo
+    String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
+    // Path where we want to build our branch later
+    String Folder = "~/builds-CI/" + identifier;
+    try{
+      // Clone the repo to a new folder in the Folder directory
+      String args[] = {"bash", "-c", "git clone " + URL + " " + Folder};
+      Process process = Runtime.getRuntime().exec(args);
+      // Wait for the thread to terminate
+      int waitFor = process.waitFor();
+      // Checkout the branch command. -t used for fetching remote branches.
+      String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.getBranchName();
+      String args2[] = {"bash", "-c", changeBranch};
+      Process process2 = Runtime.getRuntime().exec(args2);
+      int process2Wait = process2.waitFor();
+      if (waitFor == 0){ // If first command terminated properly, return the path
+        return Folder;
+      }
+    }catch(Exception e){
+      return null;
+    }
+    return null;
   }
 
   /**
@@ -77,18 +104,19 @@ public class GitHandler{
 
     Properties properties = System.getProperties();
     properties.setProperty("smtp.kth.se", host);
-    Session session = Session.getDefaultInstance(properties);  
-      
-    try{  
-        MimeMessage mimeMessage = new MimeMessage(session);  
-        mimeMessage.setFrom(new InternetAddress(from));  
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));  
-        mimeMessage.setSubject("CI Message");  
+
+    Session session = Session.getDefaultInstance(properties);
+
+    try{
+        MimeMessage mimeMessage = new MimeMessage(session);
+        mimeMessage.setFrom(new InternetAddress(from));
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));
+        mimeMessage.setSubject("CI Message");
         mimeMessage.setText(message);
 
-        Transport.send(mimeMessage);  
+        Transport.send(mimeMessage);
         return true;
-      
+
     }catch (MessagingException mex) {
         mex.printStackTrace();
         return false;
