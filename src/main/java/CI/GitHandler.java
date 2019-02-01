@@ -65,6 +65,7 @@ public class GitHandler{
       if (waitFor == 0){ // If first command terminated properly, return the path
         return Folder;
       }
+
     }catch(Exception e){
       return null;
     }
@@ -72,17 +73,35 @@ public class GitHandler{
   }
 
   /**
-  * Executes the automated tests
-  * @param path - The local path to the script starting the tests
-  * @return - True if tests went through, false if not.
-  */
-  public boolean start_tests(String path){
-    // send notification about the results
-    // TODO
-    return false;
-  }
+   * Executes the automated tests in a specified local path folder
+   * @param path - The path to the where the cloned branch exists, script will be starting the tests here
+   * @return - True if tests went through, false if not. I.e true if ./gradlew test was successful
+   * @author Philippa Örnell & Andreas Gylling
+   */
+   public boolean start_tests(String path){
+     // If path is the current path, we will end up with recursive testing. We must prevent this.
+     if(path.equals(".")){
+       return false;
+     }
+     try {
+       //                                 ./gradlew -p    ~/builds-CI/-1004278601/ test
+       String[] command = {"bash", "-c", "./gradlew -p " + path +                " test"};
+       Process process = Runtime.getRuntime().exec(command);
+       // Wait for the thread to terminate, by convention 0 indicates normal termination
+       int waitFor = process.waitFor();
+       if (waitFor == 0){
+         return true;
+       }
+       else{
+         return false;
+       }
+     } catch(Exception e) {
+       //The test failed
+     }
+     return false;
+   }
 
-  /** 
+  /**
   * Attempts to build the pulled branch locally
   * @param path - The path to where the cloned branch is located
   * @return - True if build was successful, false if not.
