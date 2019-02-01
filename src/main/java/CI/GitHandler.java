@@ -104,13 +104,14 @@ public class GitHandler{
 
     Properties properties = System.getProperties();
     properties.setProperty("smtp.kth.se", host);
-    Session session = Session.getDefaultInstance(properties);
 
-    try{
-        MimeMessage mimeMessage = new MimeMessage(session);
-        mimeMessage.setFrom(new InternetAddress(from));
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));
-        mimeMessage.setSubject("CI Message");
+    Session session = Session.getDefaultInstance(properties);  
+      
+    try{  
+        MimeMessage mimeMessage = new MimeMessage(session);  
+        mimeMessage.setFrom(new InternetAddress(from));  
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));  
+        mimeMessage.setSubject("CI Message");  
         mimeMessage.setText(message);
 
         Transport.send(mimeMessage);
