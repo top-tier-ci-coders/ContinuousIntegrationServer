@@ -13,8 +13,8 @@ public class GitHandlerTest {
   */
   @Test
   public void testPullBranch(){
-   GitEvent event = new GitEvent();
-   event.branchName = "test";
+   GitEvent event = new GitEvent("", "");
+   event.setBranchName("test");
    GitHandler gitHandler = new GitHandler(event);
    String re = gitHandler.pull_branch();
    assertNotSame(null, re);
@@ -27,7 +27,7 @@ public class GitHandlerTest {
    * @author Kartal Kaan Bozdoğan
    */
   @Test
-  public void testSendNotification() {
+  public void testSendNotificationSuccess() {
     /*
     GitEvent event = new GitEvent();
     event.pusherName = "kartal";
@@ -37,4 +37,19 @@ public class GitHandlerTest {
     assertTrue(gitHandler.send_notification("Testing... Testing..."));
     */
  }
+
+  /**
+   * Tests GitHandler.send_notification by attempting to send an email to an invalid address.
+   * @author Kartal Kaan Bozdoğan
+   */
+  @Test
+  public void testSendNotificationFail() {
+    GitEvent event = new GitEvent("","");
+    event.setPusherName("kartal");
+    event.setPusherEmail("bozdog ankth.se");
+    event.setBranchName("Mail test");
+    GitHandler gitHandler = new GitHandler(event);
+    assertFalse(gitHandler.send_notification("Testing... Testing..."));
+ }
+
 }

@@ -58,7 +58,7 @@ public class GitHandler{
       // Wait for the thread to terminate
       int waitFor = process.waitFor();
       // Checkout the branch command. -t used for fetching remote branches.
-      String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.branchName;
+      String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.getBranchName();
       String args2[] = {"bash", "-c", changeBranch};
       Process process2 = Runtime.getRuntime().exec(args2);
       int process2Wait = process2.waitFor();
@@ -109,7 +109,7 @@ public class GitHandler{
     try{
         MimeMessage mimeMessage = new MimeMessage(session);
         mimeMessage.setFrom(new InternetAddress(from));
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.pusherEmail));
+        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));
         mimeMessage.setSubject("CI Message");
         mimeMessage.setText(message);
 
