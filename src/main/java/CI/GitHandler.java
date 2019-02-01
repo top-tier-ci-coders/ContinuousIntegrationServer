@@ -104,6 +104,7 @@ public class GitHandler{
 
     Properties properties = System.getProperties();
     properties.setProperty("smtp.kth.se", host);
+
     Session session = Session.getDefaultInstance(properties);
 
     try{
