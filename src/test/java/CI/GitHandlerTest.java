@@ -15,7 +15,7 @@ public class GitHandlerTest {
    public void testStartTests() {
      // We pull a branch and run tests on this one
      GitEvent event = new GitEvent("", "");
-     event.setBranchName("test");
+     event.setBranchName("buildstestspass");
      GitHandler gitHandler = new GitHandler(event);
      String p = gitHandler.pull_branch();
 
