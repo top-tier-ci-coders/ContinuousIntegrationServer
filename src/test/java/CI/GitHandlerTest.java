@@ -41,7 +41,7 @@ public class GitHandlerTest {
    String re = gitHandler.pull_branch();
    assertNotSame(null, re);
    // Also make sure the return is a correct path
-   assertTrue(re.matches("~/builds-CI/-?[0-9]+"));
+   assertTrue(re.matches(".*/builds-CI/-?[0-9]+"));
   }
 
   /**
