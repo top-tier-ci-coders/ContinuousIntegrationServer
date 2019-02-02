@@ -3,6 +3,7 @@ package CI;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 public class GitHandlerTest {
 
@@ -31,18 +32,28 @@ public class GitHandlerTest {
   /**
   * Tests that the pull_branch function terminates properly by returning
   * a path that isn't null.
-  * @author Andreas Gylling, Philippa Örnell
+  * @author Andreas Gylling, Philippa Örnell, Kartal Kaan Bozdoğan
   */
   @Test
   public void testPullBranch(){
    GitEvent event = new GitEvent("", "");
-   event.setBranchName("test");
+   event.setBranchName("abranchthatdoesntexist"); // We can't pull a branch that doesn't exist
+   assertNull(new GitHandler(event).pull_branch());
+   event.setBranchName("buildstestspass");
    GitHandler gitHandler = new GitHandler(event);
    String re = gitHandler.pull_branch();
    assertNotSame(null, re);
    // Also make sure the return is a correct path
    assertTrue(re.matches(".*/builds-CI/-?[0-9]+"));
-  }
+   // Make sure that the repo is pulled correctly by reading the contents of a well-known file
+   try {
+       assertEquals(GitEventTest.readFile(re + "/well_known", Charset.forName("US-ASCII")), "test\n");
+   }
+   catch (IOException e) {
+         e.printStackTrace();
+         assertTrue(false);
+   }
+ }
 
   /**
    * Tests GitHandler.build_branch by a positive test to build
