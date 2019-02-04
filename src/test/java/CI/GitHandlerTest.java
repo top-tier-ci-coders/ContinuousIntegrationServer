@@ -76,14 +76,20 @@ public class GitHandlerTest {
    */
   @Test
   public void testSendNotificationSuccess() {
-    /**
-    GitEvent event = new GitEvent();
-    event.pusherName = "kartal";
-    event.pusherEmail = "bozdogan@kth.se";
-    event.branchName = "Mail test";
+	/*String jsonStr = null;
+	try {
+		jsonStr = GitEventTest.readFile("./src/test/java/CI/jsonStr", Charset.defaultCharset());
+    }
+	catch (IOException e) {
+		assertTrue(false);
+	}
+	String eventType = "push";
+	GitEvent event = new GitEvent(eventType, jsonStr);
+    event.setPusherName("kartal");
+    event.setPusherEmail("bozdogan@kth.se");
+    event.setBranchName("Mail test");
     GitHandler gitHandler = new GitHandler(event);
-    assertTrue(gitHandler.send_notification("Testing... Testing..."));
-    */
+    assertTrue(gitHandler.send_notification("Testing... Testing..."));*/
  }
 
   /**
@@ -92,14 +98,20 @@ public class GitHandlerTest {
    */
   @Test
   public void testSendNotificationFail() {
-    /**
-    GitEvent event = new GitEvent("","");
+	String jsonStr = null;
+	try {
+		jsonStr = GitEventTest.readFile("./src/test/java/CI/jsonStr", Charset.defaultCharset());
+    }
+	catch (IOException e) {
+		assertTrue(false);
+	}
+	String eventType = "push";
+	GitEvent event = new GitEvent(eventType, jsonStr);
     event.setPusherName("kartal");
     event.setPusherEmail("bozdog ankth.se");
     event.setBranchName("Mail test");
     GitHandler gitHandler = new GitHandler(event);
     assertFalse(gitHandler.send_notification("Testing... Testing..."));
-    */
  }
 
 }
