@@ -50,7 +50,7 @@ public class GitHandler{
     // URL to our CI repo
     String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
     // Path where we want to build our branch later
-    String Folder = "~/builds-CI/" + identifier;
+    String Folder = System.getProperty("user.home") + "/builds-CI/" + identifier;
     try{
       // Clone the repo to a new folder in the Folder directory
       String args[] = {"bash", "-c", "git clone " + URL + " " + Folder};
