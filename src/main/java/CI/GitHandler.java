@@ -62,7 +62,7 @@ public class GitHandler{
       String args2[] = {"bash", "-c", changeBranch};
       Process process2 = Runtime.getRuntime().exec(args2);
       int process2Wait = process2.waitFor();
-      if (waitFor == 0){ // If first command terminated properly, return the path
+      if (waitFor == 0 && process2Wait == 0){ // If both commands terminated properly, return the path
         return Folder;
       }
 

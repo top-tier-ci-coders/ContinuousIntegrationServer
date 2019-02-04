@@ -9,7 +9,7 @@ import java.nio.file.Files;
 
 public class GitEventTest {
 
-	private static String readFile(String path, Charset encoding) throws IOException {
+	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
 	}
