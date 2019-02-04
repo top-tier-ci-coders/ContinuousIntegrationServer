@@ -37,5 +37,14 @@ dependencies {
     compile group: 'javax.mail', name: 'mail', version: '1.5.0-b01'
 }
 
+apply plugin: 'java'
+
+test {
+    testLogging {
+        outputs.upToDateWhen {false}
+        showStandardStreams = true
+    }
+}
+
 // Define the main class for the application
 mainClassName = 'CI.ContinuousIntegrationServer'
