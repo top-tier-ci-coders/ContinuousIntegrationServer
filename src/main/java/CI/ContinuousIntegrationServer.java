@@ -23,7 +23,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
     /**
     * Handles a given push event. Outputs the response in *response*, if needed.
 	* @author Kartal Kaan Bozdoğan
-    * @param request - The push notification request as sent by GigHub.
+    * @param request - The push notification request as sent by GitHub.
 	* @param response - The http response
     */
     public void handlePushEvent(HttpServletRequest request, HttpServletResponse response) {
