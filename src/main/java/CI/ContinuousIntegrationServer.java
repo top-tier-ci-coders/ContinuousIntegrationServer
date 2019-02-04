@@ -20,8 +20,13 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 public class ContinuousIntegrationServer extends AbstractHandler
 {
 
-
-    public void handlePushEvent(HttpServletRequest request, HttpServletResponse reponse) {
+    /**
+    * Handles a given push event. Outputs the response in *response*, if needed.
+	* @author Kartal Kaan Bozdoğan
+    * @param request - The push notification request as sent by GigHub.
+	* @param response - The http response
+    */
+    public void handlePushEvent(HttpServletRequest request, HttpServletResponse response) {
         try {
             GitEvent event = new GitEvent("push", request.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
             GitHandler handler = new GitHandler(event);
@@ -33,6 +38,14 @@ public class ContinuousIntegrationServer extends AbstractHandler
         }
     }
 
+	/**
+    * Handles HTTP requests. Called by jetty.
+	* @author Kartal Kaan Bozdoğan
+    * @param target - The target URL
+	* @param baseRequest - The base request, as set by jetty
+	* @param request - The http request
+	* @param response - The http response
+    */
     public void handle(String target,
             Request baseRequest,
             HttpServletRequest request,
