@@ -18,6 +18,14 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import java.lang.Runtime;
 
+/**
+  * The GitHandler class handles a GitEvent object (see GitEvent class for more info).
+  * It is used for managing continuous integration tasks.
+  * The class include methods to pull branches from Github,
+  * building the code, testing the code and sending status emails.
+  *
+  */
+
 public class GitHandler{
   private GitEvent G; // GitEvent object containing all information about the event.
 
