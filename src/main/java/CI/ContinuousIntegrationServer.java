@@ -2,11 +2,12 @@ package CI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
+import java.util.Enumeration;
 
 import java.io.IOException;
-
-import java.util.Enumeration;
 import java.util.stream.Collectors;
+
+import org.json.*;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.Request;
@@ -18,31 +19,61 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
  *   */
 public class ContinuousIntegrationServer extends AbstractHandler
 {
+
+    /**
+    * Handles a given push event. Outputs the response in *response*, if needed.
+	* @author Kartal Kaan Bozdoğan
+    * @param request - The push notification request as sent by GitHub.
+	* @param response - The http response
+    */
+    public void handlePushEvent(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            GitEvent event = new GitEvent("push", request.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
+            GitHandler handler = new GitHandler(event);
+            System.out.println("Received a push event for the branch \"" + event.getBranchName() + "\"");
+            handler.request_push();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	/**
+    * Handles HTTP requests. Called by jetty.
+	* @author Kartal Kaan Bozdoğan
+    * @param target - The target URL
+	* @param baseRequest - The base request, as set by jetty
+	* @param request - The http request
+	* @param response - The http response
+    */
     public void handle(String target,
             Request baseRequest,
             HttpServletRequest request,
             HttpServletResponse response) 
             throws IOException, ServletException
         {
-            String eventType = "";
-            for (Enumeration<String> e = request.getHeaders("X-GitHub-Event"); e.hasMoreElements();) {
-                eventType = e.nextElement();
-            }
-
-			String jsonStr = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-
-			GitEvent gitEvent = new GitEvent(eventType, jsonStr);
-			
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
             baseRequest.setHandled(true);
 
-            // here you do all the continuous integration tasks
-            // for example
-            // 1st clone your repository
-            // 2nd compile the code
-
-            response.getWriter().println("CI job done");
+            Enumeration<String> e = request.getHeaders("X-GitHub-Event");
+            if (e.hasMoreElements() == false)
+            {
+                System.out.println("ERROR: The received request has no X-GitHub-Event header.");
+                response.getWriter().println("Invalid request");
+                return ;
+            }
+            String eventType = e.nextElement();
+            if (eventType.equals("push"))
+            {
+                handlePushEvent(request, response);
+                return ;
+            }
+            else
+            {
+		System.out.println("Ignoring event type \"" + eventType + "\"");   
+                response.getWriter().println("CI job done");
+            }
         }
 
     // used to start the CI server in command line
