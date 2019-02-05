@@ -36,14 +36,38 @@ public class GitHandler{
   /**
   * Handles an push event by calling all individual functions handling a step each.
   * Meaning, pull, build, test and notify.
+  * @author Andreas Gylling
   */
   public void request_push(){
-        // TODO
-      // Called by request_push
       // Try and pull the branch
+      String path = pull_branch();
       // Try and build the branch
+      Boolean buildSucess = build_branch(path);
       // Execute the Test suite.
-      // Send notification
+      Boolean testSuccess = false;
+      Boolean mailSuccess = false;
+      String message = "";
+      if(buildSucess){
+        // Try and start the test suite
+        testSuccess = start_tests(path);
+        if(testSuccess){
+          message = "Building the branch \""+ G.getBranchName() + "\" and starting the test suite successful, check logs for results";
+          mailSuccess = send_notification(message);
+        }else{
+          message = "Building the branch \""+ G.getBranchName() + "\" was successful, but starting the test suite failed, please check logs";
+          mailSuccess = send_notification(message);
+        }
+      }
+      else{
+          // Send notification that build failed
+          message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
+          mailSuccess = send_notification(message);
+      }
+      if(mailSuccess){
+        System.out.println("Notification was sucessfully send");
+      }else{
+        System.out.println("Notification could not be sent, failed");
+      }
   }
 
   /**

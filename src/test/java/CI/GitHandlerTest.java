@@ -8,6 +8,21 @@ import java.nio.charset.Charset;
 public class GitHandlerTest {
 
   /**
+  * Test that a branch should run all steps when a push comes in and be successful.
+  * Result is send to the email provided to event
+  * @author Andreas Gylling
+  */
+  @Test
+  public void testRequestPush(){
+    GitEvent event = new GitEvent("","");
+    // Master branch should always build sucessfully
+    event.setBranchName("master");
+    event.setPusherEmail("agylling@kth.se");
+    GitHandler gh = new GitHandler(event);
+    gh.request_push();
+  }
+
+  /**
     * This tests the start_tests function in the GitHandler class.
     * @author Philippa Ö, Andreas G.
     */
