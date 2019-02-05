@@ -8,7 +8,10 @@ import java.nio.charset.Charset;
 public class GitHandlerTest {
 
   /**
-  * Test that a branch should run all steps when a push comes in and be successful.
+  * Test that a branch should run all steps when a push comes in.
+  * Runs a build on master which should always be successful
+  * Runs a build on a branch that fails on build
+  * Runs a build on a branch that fails to start the tests.
   * Result is send to the email provided to event
   * @author Andreas Gylling
   */
@@ -19,6 +22,12 @@ public class GitHandlerTest {
     event.setBranchName("master");
     event.setPusherEmail("agylling@kth.se");
     GitHandler gh = new GitHandler(event);
+    gh.request_push();
+    // Fail already at build.
+    event.setBranchName("nobuild");
+    gh.request_push();
+    // Fail at test after build
+    event.setBranchName("testsfail");
     gh.request_push();
   }
 
