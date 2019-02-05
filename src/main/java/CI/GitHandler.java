@@ -42,12 +42,12 @@ public class GitHandler{
       // Try and pull the branch
       String path = pull_branch();
       // Try and build the branch
-      Boolean buildSucess = build_branch(path);
+      Boolean buildSuccess = build_branch(path);
       // Execute the Test suite.
       Boolean testSuccess = false;
       Boolean mailSuccess = false;
       String message = "";
-      if(buildSucess){
+      if(buildSuccess){
         // Try and start the test suite
         testSuccess = start_tests(path);
         if(testSuccess){
