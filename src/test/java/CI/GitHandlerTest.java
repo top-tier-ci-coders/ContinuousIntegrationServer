@@ -96,9 +96,19 @@ public class GitHandlerTest {
   public void testBuildBranch() {
     System.out.println("Test build branch");
     GitEvent event = new GitEvent("","");
+	// The branch "nobuild" shall not build
+	event.setBranchName("nobuild");
     GitHandler gitHandler = new GitHandler(event);
-    assertTrue(gitHandler.build_branch("."));
-    assertFalse(gitHandler.build_branch("./herpderp"));
+	String path = gitHandler.pull_branch();
+	assertNotNull(path);
+	assertFalse(gitHandler.build_branch(path));
+	// The branch "testsfail" shall build
+	event.setBranchName("testsfail");
+	path = gitHandler.pull_branch();
+	assertNotNull(path);
+	assertTrue(gitHandler.build_branch(path));
+	// A nonexisting folder shall not build
+    assertFalse(gitHandler.build_branch("./thisfolderdoesntexist1209786540"));
   }
 
   /**
