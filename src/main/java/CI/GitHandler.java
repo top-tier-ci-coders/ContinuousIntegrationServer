@@ -103,18 +103,22 @@ public class GitHandler{
       Process process = Runtime.getRuntime().exec(args);
       // Wait for the thread to terminate
       int waitFor = process.waitFor();
-      // Checkout the branch command. -t used for fetching remote branches.
-      String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.getBranchName();
-      String args2[] = {"bash", "-c", changeBranch};
-      Process process2 = Runtime.getRuntime().exec(args2);
-      int process2Wait = process2.waitFor();
-      if (waitFor == 0 && process2Wait == 0){ // If both commands terminated properly, return the path
-        return Folder;
-      }else if(G.getBranchName().equals("master")){ // Special case, process2 wont succeed if branchname = master
-        return Folder;
-      }else{
+      if(waitFor != 0){
         return null;
       }
+      // Checkout the branch command. -t used for fetching remote branches.
+      if(!G.getBranchName().equals("master")){
+        String changeBranch = "git -C "+ Folder +" checkout -t origin/"+G.getBranchName();
+        String args2[] = {"bash", "-c", changeBranch};
+        Process process2 = Runtime.getRuntime().exec(args2);
+        int process2Wait = process2.waitFor();
+        if (process2Wait == 0){ // If both commands terminated properly, return the path
+          return Folder;
+        }else{
+          return null;
+        }
+      }
+      return Folder;
 
     }catch(Exception e){
       return null;

@@ -32,6 +32,10 @@ public class GitHandlerTest {
     event.setBranchName("testsfail");
     boolean test3 = gh.request_push();
     assertFalse(test3);
+    // Fails at trying on branch that doesnt exist
+    event.setBranchName("gdfngfdngkdfj4324732423");
+    boolean test4 = gh.request_push();
+    assertFalse(test4);
   }
 
   /**
