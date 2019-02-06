@@ -176,27 +176,44 @@ public class GitHandler{
   * @return - True if message was send, false if not.
   */
   public boolean send_notification(String message){
-    String from = "top-tier-ci@gmail.com";
-    String host = "localhost";
+	final String from = "toptierci";
+	final String pass = "toptierCI123";
+	final String to = G.getPusherEmail();
+	final String subject = "CI Notification";
+	final String body = message;
+	Properties props = System.getProperties();
+	String host = "smtp.gmail.com";
+	props.put("mail.smtp.starttls.enable", "true");
+	props.put("mail.smtp.host", host);
+	props.put("mail.smtp.user", from);
+	props.put("mail.smtp.password", pass);
+	props.put("mail.smtp.port", "587");
+	props.put("mail.smtp.auth", "true");
 
-    Properties properties = System.getProperties();
-    properties.setProperty("smtp.kth.se", host);
+	Session session = Session.getDefaultInstance(props);
+	MimeMessage mimeMessage = new MimeMessage(session);
 
-    Session session = Session.getDefaultInstance(properties);
+	try {
+		mimeMessage.setFrom(new InternetAddress(from));
+		InternetAddress toAddress = new InternetAddress(to);
 
-    try{
-        MimeMessage mimeMessage = new MimeMessage(session);
-        mimeMessage.setFrom(new InternetAddress(from));
-        mimeMessage.addRecipient(Message.RecipientType.TO,new InternetAddress(G.getPusherEmail()));
-        mimeMessage.setSubject("CI Message");
-        mimeMessage.setText(message);
+		mimeMessage.addRecipient(Message.RecipientType.TO, toAddress);
 
-        Transport.send(mimeMessage);
-        return true;
-
-    }catch (MessagingException mex) {
-        mex.printStackTrace();
-        return false;
-    }
+		mimeMessage.setSubject(subject);
+		mimeMessage.setText(body);
+		Transport transport = session.getTransport("smtp");
+		transport.connect(host, from, pass);
+		transport.sendMessage(mimeMessage, mimeMessage.getAllRecipients());
+		transport.close();
+	}
+	catch (AddressException ae) {
+		//ae.printStackTrace();
+		return false;
+	}
+	catch (MessagingException me) {
+		//me.printStackTrace();
+		return false;
+	}
+	return true;
   }
 }

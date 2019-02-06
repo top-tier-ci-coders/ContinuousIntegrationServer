@@ -1,4 +1,4 @@
-#Contributing
+# Contributing
 ## Committing
 It is important that the commit message use a specific prefix:
 
