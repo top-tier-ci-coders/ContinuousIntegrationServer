@@ -37,16 +37,24 @@ public class GitHandler{
   * Handles an push event by calling all individual functions handling a step each.
   * Meaning, pull, build, test and notify.
   * @author Andreas Gylling
+  * @return true if everything is succesful, false if anything failed
   */
-  public void request_push(){
-      // Try and pull the branch
-      String path = pull_branch();
-      // Try and build the branch
-      Boolean buildSuccess = build_branch(path);
-      // Execute the Test suite.
+  public boolean request_push(){
+      String message = "";
       Boolean testSuccess = false;
       Boolean mailSuccess = false;
-      String message = "";
+      Boolean buildSuccess = false;
+      // Try and pull the branch
+      String path = pull_branch();
+      if(path == null && !G.getBranchName().equals("master")){;
+        message = "Failed to pull branch, check that the branch name is correct.";
+        send_notification(message);
+        System.out.println(message);
+        return false;
+      }
+      // Try and build the branch
+      buildSuccess = build_branch(path);
+      // Execute the Test suite.
       if(buildSuccess){
         // Try and start the test suite
         testSuccess = start_tests(path);
@@ -63,10 +71,16 @@ public class GitHandler{
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
           mailSuccess = send_notification(message);
       }
+      System.out.println(message);
       if(mailSuccess){
         System.out.println("Notification was sucessfully send");
       }else{
         System.out.println("Notification could not be sent, failed");
+      }
+      if(buildSuccess == false || testSuccess == false){
+        return false;
+      }else{
+        return true;
       }
   }
 
@@ -78,7 +92,7 @@ public class GitHandler{
   public String pull_branch(){
     // Creates a random number, used for folder name. Prevents duplicate issues.
     Random rn = new Random();
-    int identifier = rn.nextInt();
+    int identifier = Math.abs(rn.nextInt());
     // URL to our CI repo
     String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
     // Path where we want to build our branch later
@@ -96,12 +110,15 @@ public class GitHandler{
       int process2Wait = process2.waitFor();
       if (waitFor == 0 && process2Wait == 0){ // If both commands terminated properly, return the path
         return Folder;
+      }else if(G.getBranchName().equals("master")){ // Special case, process2 wont succeed if branchname = master
+        return Folder;
+      }else{
+        return null;
       }
 
     }catch(Exception e){
       return null;
     }
-    return null;
   }
 
   /**

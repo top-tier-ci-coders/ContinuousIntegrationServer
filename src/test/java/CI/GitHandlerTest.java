@@ -20,15 +20,18 @@ public class GitHandlerTest {
     GitEvent event = new GitEvent("","");
     // Master branch should always build sucessfully
     event.setBranchName("master");
-    event.setPusherEmail("agylling@kth.se");
+    event.setPusherEmail("toptierci@gmail.com");
     GitHandler gh = new GitHandler(event);
-    gh.request_push();
+    boolean test1 = gh.request_push();
+    assertTrue(test1);
     // Fail already at build.
     event.setBranchName("nobuild");
-    gh.request_push();
+    boolean test2 = gh.request_push();
+    assertFalse(test2);
     // Fail at test after build
     event.setBranchName("testsfail");
-    gh.request_push();
+    boolean test3 = gh.request_push();
+    assertFalse(test3);
   }
 
   /**
