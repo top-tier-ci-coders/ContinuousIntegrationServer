@@ -8,6 +8,37 @@ import java.nio.charset.Charset;
 public class GitHandlerTest {
 
   /**
+  * Test that a branch should run all steps when a push comes in.
+  * Runs a build on master which should always be successful
+  * Runs a build on a branch that fails on build
+  * Runs a build on a branch that fails to start the tests.
+  * Result is send to the email provided to event
+  * @author Andreas Gylling
+  */
+  @Test
+  public void testRequestPush(){
+    GitEvent event = new GitEvent("","");
+    // Master branch should always build sucessfully
+    event.setBranchName("master");
+    event.setPusherEmail("toptierci@gmail.com");
+    GitHandler gh = new GitHandler(event);
+    boolean test1 = gh.request_push();
+    assertTrue(test1);
+    // Fail already at build.
+    event.setBranchName("nobuild");
+    boolean test2 = gh.request_push();
+    assertFalse(test2);
+    // Fail at test after build
+    event.setBranchName("testsfail");
+    boolean test3 = gh.request_push();
+    assertFalse(test3);
+    // Fails at trying on branch that doesnt exist
+    event.setBranchName("gdfngfdngkdfj4324732423");
+    boolean test4 = gh.request_push();
+    assertFalse(test4);
+  }
+
+  /**
     * This tests the start_tests function in the GitHandler class.
     * @author Philippa Ö, Andreas G.
     */
