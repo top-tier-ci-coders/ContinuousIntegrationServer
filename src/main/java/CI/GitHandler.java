@@ -46,7 +46,7 @@ public class GitHandler{
       Boolean buildSuccess = false;
       // Try and pull the branch
       String path = pull_branch();
-      if(path == null && !G.getBranchName().equals("master")){;
+      if(path == null){;
         message = "Failed to pull branch, check that the branch name is correct.";
         send_notification(message);
         System.out.println(message);
