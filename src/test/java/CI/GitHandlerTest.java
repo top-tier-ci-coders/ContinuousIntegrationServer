@@ -18,8 +18,8 @@ public class GitHandlerTest {
   @Test
   public void testRequestPush(){
     GitEvent event = new GitEvent("","");
-    // Master branch should always build sucessfully
-    event.setBranchName("master");
+    // The happy path
+    event.setBranchName("buildstestspass");
     event.setPusherEmail("toptierci@gmail.com");
     GitHandler gh = new GitHandler(event);
     boolean test1 = gh.request_push();
