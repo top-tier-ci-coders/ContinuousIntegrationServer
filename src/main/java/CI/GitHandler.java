@@ -45,33 +45,35 @@ public class GitHandler{
       Boolean mailSuccess = false;
       Boolean buildSuccess = false;
       // Try and pull the branch
+	  System.out.println("Pulling \"" + G.getBranchName() + "\"");
       String path = pull_branch();
-      if(path == null){;
-        message = "Failed to pull branch, check that the branch name is correct.";
+      if(path == null){
+        message = "Failed to pull \"" + G.getBranchName() + "\", check that the branch name is correct.";
         send_notification(message);
         System.out.println(message);
         return false;
       }
       // Try and build the branch
+	  System.out.println("Building \"" + G.getBranchName() + "\"");
       buildSuccess = build_branch(path);
       // Execute the Test suite.
       if(buildSuccess){
         // Try and start the test suite
+		System.out.println("Testing \"" + G.getBranchName() + "\"");
         testSuccess = start_tests(path);
         if(testSuccess){
-          message = "Building the branch \""+ G.getBranchName() + "\" and starting the test suite successful, check logs for results";
-          mailSuccess = send_notification(message);
+          message = "Building the branch \""+ G.getBranchName() + "\" was successful, tests passed, check logs for results";
         }else{
-          message = "Building the branch \""+ G.getBranchName() + "\" was successful, but starting the test suite failed, please check logs";
-          mailSuccess = send_notification(message);
+          message = "Building the branch \""+ G.getBranchName() + "\" was successful, but the tests failed, please check logs";
         }
       }
       else{
           // Send notification that build failed
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
-          mailSuccess = send_notification(message);
       }
-      System.out.println(message);
+	  System.out.println(message);
+	  System.out.println("Sending notification...");
+      mailSuccess = send_notification(message);
       if(mailSuccess){
         System.out.println("Notification was sucessfully send");
       }else{
@@ -93,6 +95,7 @@ public class GitHandler{
     // Creates a random number, used for folder name. Prevents duplicate issues.
     Random rn = new Random();
     int identifier = Math.abs(rn.nextInt());
+	System.out.println("Random identifier: " + String.valueOf(identifier));
     // URL to our CI repo
     String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
     // Path where we want to build our branch later
