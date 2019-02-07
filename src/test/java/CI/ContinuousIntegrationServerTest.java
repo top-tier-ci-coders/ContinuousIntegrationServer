@@ -79,7 +79,7 @@ public class ContinuousIntegrationServerTest {
   * Tests the handle function with a push notification that has an invalid body
   * @author Kartal Kaan Bozdoğan
   */
-  /*@Test
+  @Test
   public void handleTestInvalidJSON(){
     Request baseRequest = mock(Request.class);
     HttpServletRequest request = mock(HttpServletRequest.class, RETURNS_DEEP_STUBS);
@@ -98,7 +98,7 @@ public class ContinuousIntegrationServerTest {
     verify(baseRequest).setHandled(true);
     verify(response).setContentType("text/html;charset=utf-8");
     verify(response).setStatus(HttpServletResponse.SC_OK);
-  }*/
+  }
 
 
 }

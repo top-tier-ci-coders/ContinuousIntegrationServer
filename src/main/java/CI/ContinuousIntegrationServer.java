@@ -3,7 +3,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.util.Enumeration;
-
+import java.lang.Exception;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -62,8 +62,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
                     handler.request_push();
                     response.getWriter().println("CI job done");
                 }
-                catch (IOException ioe) {
-                    ioe.printStackTrace();
+                catch (Exception ex) {
+                    ex.printStackTrace();
                 }
                 return ;
             }
