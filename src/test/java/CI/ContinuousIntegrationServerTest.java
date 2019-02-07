@@ -39,7 +39,7 @@ public class ContinuousIntegrationServerTest {
         when(request.getHeaders("X-GitHub-Event")).thenReturn(
 	    new Vector(new HashSet<String>(Arrays.asList("push"))).elements());
         when(request .getReader()).thenReturn(
-	    new BufferedReader(new FileReader("./src/test/java/CI/jsonStr")));
+	    new BufferedReader(new FileReader("./src/test/java/CI/jsonStr2")));
     }
     catch (IOException e) {
 	e.printStackTrace();

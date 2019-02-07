@@ -54,3 +54,4 @@ Implemented request_push, pull_branch,start_tests in the GitHandler class and co
 ### Philippa Örnell:
 Implemented pull_branch, start_tests (pair programmed with Andreas) in the GitHandler class and corresponding test cases in the GitHandlerTest class. Documentation and reviewing code. Also assisted in solving the email notification.
 ### Marcus Östling:
+Set up gradle project, added travis ci to git repo and set up a server on a Raspberry pi model 1, the server was in the end to slow to actually use. Wrote build_branch function. Wrote the parts of handle() that handles targets /list and /<build id> 
