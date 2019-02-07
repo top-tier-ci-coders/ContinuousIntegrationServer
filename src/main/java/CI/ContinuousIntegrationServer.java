@@ -20,24 +20,6 @@ import org.eclipse.jetty.server.handler.AbstractHandler;
 public class ContinuousIntegrationServer extends AbstractHandler
 {
 
-    /**
-    * Handles a given push event. Outputs the response in *response*, if needed.
-	* @author Kartal Kaan Bozdoğan
-    * @param request - The push notification request as sent by GitHub.
-	* @param response - The http response
-    */
-    public void handlePushEvent(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            GitEvent event = new GitEvent("push", request.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
-            GitHandler handler = new GitHandler(event);
-            System.out.println("Received a push event for the branch \"" + event.getBranchName() + "\"");
-            handler.request_push();
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 	/**
     * Handles HTTP requests. Called by jetty.
 	* @author Kartal Kaan Bozdoğan
@@ -50,7 +32,6 @@ public class ContinuousIntegrationServer extends AbstractHandler
             Request baseRequest,
             HttpServletRequest request,
             HttpServletResponse response) 
-            throws IOException, ServletException
         {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
@@ -60,19 +41,41 @@ public class ContinuousIntegrationServer extends AbstractHandler
             if (e.hasMoreElements() == false)
             {
                 System.out.println("ERROR: The received request has no X-GitHub-Event header.");
-                response.getWriter().println("Invalid request");
+                try {
+                    response.getWriter().println("Invalid request");
+                }
+                catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
                 return ;
             }
             String eventType = e.nextElement();
             if (eventType.equals("push"))
             {
-                handlePushEvent(request, response);
+		try {
+                    GitEvent event = new GitEvent("push",
+			request.getReader().lines().collect(
+				Collectors.joining(System.lineSeparator())));
+                    GitHandler handler = new GitHandler(event);
+                    System.out.println("Received a push event for the branch \"" +
+			event.getBranchName() + "\"");
+                    handler.request_push();
+                    response.getWriter().println("CI job done");
+                }
+                catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
                 return ;
             }
             else
             {
 		System.out.println("Ignoring event type \"" + eventType + "\"");   
-                response.getWriter().println("CI job done");
+                try {
+                    response.getWriter().println("CI job done");
+                }
+                catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
             }
         }
 
