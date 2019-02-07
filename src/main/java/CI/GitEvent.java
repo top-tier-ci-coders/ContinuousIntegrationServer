@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.stream.Collectors;
+import org.json.JSONException;
 
 /** 
  *  @author Gustaf Pihl
@@ -20,7 +21,7 @@ public class GitEvent
     private String pusherEmail;
     private Boolean validEvent;
 
-    public GitEvent(String eventType, String jsonStr) {
+    public GitEvent(String eventType, String jsonStr) throws JSONException {
         this.validEvent = false;
         this.eventType = eventType;         
 
@@ -36,7 +37,6 @@ public class GitEvent
 
             this.validEvent = true;
         }
-
     }
 
     public String getPusherName() {
@@ -59,7 +59,7 @@ public class GitEvent
         return this.validEvent;
     }
 
-	public void setPusherName(String pusherName) {
+    public void setPusherName(String pusherName) {
         this.pusherName = pusherName;
     }
 

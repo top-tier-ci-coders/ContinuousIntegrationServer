@@ -2,8 +2,9 @@ package CI;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
-
 import java.util.Enumeration;
+import java.lang.Exception;
+
 import java.io.IOException;
 import java.util.stream.Collectors;
 import java.util.regex.Pattern;
@@ -105,7 +106,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
             String eventType = e.nextElement();
             if (eventType.equals("push"))
             {
-		          try {
+				try {
                     GitEvent event = new GitEvent("push",
 			                  request.getReader().lines().collect(
 				                    Collectors.joining(System.lineSeparator())));
@@ -115,8 +116,8 @@ public class ContinuousIntegrationServer extends AbstractHandler
                     handler.request_push();
                     response.getWriter().println("CI job done");
                 }
-                catch (IOException ioe) {
-                    ioe.printStackTrace();
+                catch (IOException | JSONException ex) {
+                    ex.printStackTrace();
                 }
                 return ;
             }
