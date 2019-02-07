@@ -4,8 +4,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.util.Enumeration;
 import java.lang.Exception;
+
 import java.io.IOException;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 import org.json.*;
 
@@ -22,21 +24,63 @@ public class ContinuousIntegrationServer extends AbstractHandler
 
 	/**
     * Handles HTTP requests. Called by jetty.
-	* @author Kartal Kaan Bozdoğan
+	  * @author Kartal Kaan Bozdoğan
     * @param target - The target URL
-	* @param baseRequest - The base request, as set by jetty
-	* @param request - The http request
-	* @param response - The http response
+	  * @param baseRequest - The base request, as set by jetty
+	  * @param request - The http request
+	  * @param response - The http response
     */
     public void handle(String target,
             Request baseRequest,
             HttpServletRequest request,
             HttpServletResponse response) 
-        {
-            response.setContentType("text/html;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_OK);
-            baseRequest.setHandled(true);
+    {
+        response.setContentType("text/html;charset=utf-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        baseRequest.setHandled(true);
 
+        if (target.equals("/list")) {
+            // List ids of all build
+            System.out.println("LIST all build request.");
+            String[] builds = BuildLogger.listBuilds();
+            if(builds.length > 0) {
+              String allBuilds = "List of build ids:<br>";
+              for(String s : builds) {
+                allBuilds += s + "<br>";
+              }
+              try {
+                  response.getWriter().println(allBuilds);
+              } catch (IOException ioe) {
+                  ioe.printStackTrace();
+              }
+            } else {
+              try {
+                  response.getWriter().println("No build logs found.");
+              } catch (IOException ioe) {
+                  ioe.printStackTrace();
+              }
+            }
+
+        } else if(Pattern.compile("^/[0-9]+$").matcher(target).matches()){
+            // List a unique build
+            System.out.println("List build:" + target.substring(1) + " request.");
+            String status = BuildLogger.getBuildStatus(target.substring(1));
+            if(status != null) {
+                try {
+                    response.getWriter().println(status);
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            } else {
+                try {
+                    response.getWriter().println("Invalid build id.");
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
+                }
+            }
+
+        } else {
+            // Handle github webhook push event
             Enumeration<String> e = request.getHeaders("X-GitHub-Event");
             if (e.hasMoreElements() == false)
             {
@@ -49,16 +93,17 @@ public class ContinuousIntegrationServer extends AbstractHandler
                 }
                 return ;
             }
+
             String eventType = e.nextElement();
             if (eventType.equals("push"))
             {
-		try {
+		          try {
                     GitEvent event = new GitEvent("push",
-			request.getReader().lines().collect(
-				Collectors.joining(System.lineSeparator())));
+			                  request.getReader().lines().collect(
+				                    Collectors.joining(System.lineSeparator())));
                     GitHandler handler = new GitHandler(event);
                     System.out.println("Received a push event for the branch \"" +
-			event.getBranchName() + "\"");
+			                  event.getBranchName() + "\"");
                     handler.request_push();
                     response.getWriter().println("CI job done");
                 }
@@ -69,7 +114,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
             }
             else
             {
-		System.out.println("Ignoring event type \"" + eventType + "\"");   
+		            System.out.println("Ignoring event type \"" + eventType + "\"");   
                 try {
                     response.getWriter().println("CI job done");
                 }
@@ -78,6 +123,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
                 }
             }
         }
+    }
 
     // used to start the CI server in command line
     public static void main(String[] args) throws Exception
