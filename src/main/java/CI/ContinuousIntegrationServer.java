@@ -97,7 +97,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
             String eventType = e.nextElement();
             if (eventType.equals("push"))
             {
-		          try {
+				try {
                     GitEvent event = new GitEvent("push",
 			                  request.getReader().lines().collect(
 				                    Collectors.joining(System.lineSeparator())));
@@ -107,7 +107,7 @@ public class ContinuousIntegrationServer extends AbstractHandler
                     handler.request_push();
                     response.getWriter().println("CI job done");
                 }
-                catch (Exception ex) {
+                catch (IOException | JSONException ex) {
                     ex.printStackTrace();
                 }
                 return ;
