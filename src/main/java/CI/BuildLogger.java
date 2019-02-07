@@ -13,13 +13,20 @@ public class BuildLogger {
 
     public BuildLogger() {      
     }
-    
+
+	/** 
+	 * Returns a list of the ids of all the build logs located
+	 * in the 'log/' directory.
+	 */
     public static String[] listBuilds() {
         String dirName = "./log/";
         File directory = new File(dirName);
         return directory.list();
     }
-    
+
+	/** 
+	 * Returns the contents of the log file with id build_id
+	 */    
     public static String getBuildStatus(String build_id) {
         String status = "";
         try {
@@ -37,6 +44,10 @@ public class BuildLogger {
         }
     }
 
+	/** 
+	 * Creates a file with name build_id in the 'log/' folder if
+	 * it doesn't already exist. Writes status to the file.
+	 */    
     public static void setBuildStatus(String build_id, String status) {
         String directoryName = "./log/";
         String fileName = build_id;

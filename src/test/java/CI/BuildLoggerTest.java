@@ -12,7 +12,10 @@ import java.nio.file.Files;
  *  Tests the functionality of the BuildLogger class.
  */  
 public class BuildLoggerTest {
- 
+
+	/** 
+	 *  Tests the functionality of the BuildLogger class.
+	 */   
     @Test
     public void Test1() {
         // Create new build log
