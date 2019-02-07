@@ -71,6 +71,7 @@ public class GitHandler{
           // Send notification that build failed
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
       }
+    message += " Build folder: " + path + " Report located in: /build/reports/tests/test/index.html";  
 	  System.out.println(message);
 	  System.out.println("Sending notification...");
       mailSuccess = send_notification(message);
