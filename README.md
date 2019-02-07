@@ -37,7 +37,11 @@ To build the project, run `./gradlew build`
 To run the project, run `./gradlew run`
 
 ### How compilation has been implemented and unit-tested.
-TODO
+Compilation is handled by GitHandler.build_branch
+Since we use gradle in our project, it merely executes the command "gradlew build -x test" and compares the result to 0 to see whether it succeeded.
+Compilation is unit tested in GitHandlerTest.testBuildBranch
+The test tries to pull and build the branches "nobuild" and "testsfail". Both of these branches are dummy branches that have been created specifically for unit tests.
+The branch "nobuild" has compilation errors, whereas the branch "testsfail" builds properly, but fails its own tests.
 ### How test execution has been implemented and unit-tested
 Test execution is made in the class GitHandler with corresponding test code in GitHandlerTest. We used Java Runtime library to execute terminal commands. We wrote mostly bash commands as we save the build in a separate build folder. The commands execute Gradle commands in order to either build or test the branch.
 
@@ -45,6 +49,10 @@ For unit testing, JUnit is used. We try several scenarios of successful and unsu
 
 ### How notification has been implemented and unit-tested.
 Notification was made using JavaMail API and Gmail SMTP server. A gmail account called toptierci was created and used for sending notifications to the pusher. The server is also notified in its terminal about the push.
+The function that send the email ("send_nofitication") is tested in GitHandlerTest.testSendNotificationSuccess and GitHandlerTest.testSendNotificationFail. The former sends a specific email to a specific email address and makes sure that the email was sent. The latter tries to send an email to a malformed address and makes sure that it fails.
+
+### The Build List URL
+To see a list of all builds so far, visit [/list](/list)
 
 ## Statement of contributions
 ### Kartal Bozdogan:
