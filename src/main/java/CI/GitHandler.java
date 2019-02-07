@@ -26,6 +26,15 @@ import java.lang.Runtime;
   *
   */
 
+enum PipelineResult
+{
+	PULL_FAILED,
+	BUILD_FAILED,
+	TEST_FAILED,
+	NOTIFY_FAILED,
+	SUCCESS
+};
+
 public class GitHandler{
   private GitEvent G; // GitEvent object containing all information about the event.
 
@@ -39,52 +48,48 @@ public class GitHandler{
   * @author Andreas Gylling
   * @return true if everything is succesful, false if anything failed
   */
-  public boolean request_push(){
+  public PipelineResult request_push(){
       String message = "";
-      Boolean testSuccess = false;
-      Boolean mailSuccess = false;
-      Boolean buildSuccess = false;
+      PipelineResult result;
       // Try and pull the branch
-	  System.out.println("Pulling \"" + G.getBranchName() + "\"");
+      System.out.println("Pulling \"" + G.getBranchName() + "\"");
       String path = pull_branch();
       if(path == null){
         message = "Failed to pull \"" + G.getBranchName() + "\", check that the branch name is correct.";
         send_notification(message);
         System.out.println(message);
-        return false;
+        return PipelineResult.PULL_FAILED;
       }
       // Try and build the branch
-	  System.out.println("Building \"" + G.getBranchName() + "\"");
-      buildSuccess = build_branch(path);
+      System.out.println("Building \"" + G.getBranchName() + "\"");
       // Execute the Test suite.
-      if(buildSuccess){
+      if(build_branch(path)){
         // Try and start the test suite
-		System.out.println("Testing \"" + G.getBranchName() + "\"");
-        testSuccess = start_tests(path);
-        if(testSuccess){
+	System.out.println("Testing \"" + G.getBranchName() + "\"");
+        if(start_tests(path)){
           message = "Building the branch \""+ G.getBranchName() + "\" was successful, tests passed, check logs for results";
+          result = PipelineResult.SUCCESS;
         }else{
           message = "Building the branch \""+ G.getBranchName() + "\" was successful, but the tests failed, please check logs";
+          result = PipelineResult.TEST_FAILED;
         }
       }
       else{
           // Send notification that build failed
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
+	  result = PipelineResult.BUILD_FAILED;
       }
     message += " Build folder: " + path + " Report located in: /build/reports/tests/test/index.html";  
 	  System.out.println(message);
 	  System.out.println("Sending notification...");
-      mailSuccess = send_notification(message);
-      if(mailSuccess){
+      if(send_notification(message)){
         System.out.println("Notification was sucessfully send");
       }else{
         System.out.println("Notification could not be sent, failed");
+	if (result == PipelineResult.SUCCESS)
+	        result = PipelineResult.NOTIFY_FAILED;
       }
-      if(buildSuccess == false || testSuccess == false){
-        return false;
-      }else{
-        return true;
-      }
+      return result;
   }
 
   /**
