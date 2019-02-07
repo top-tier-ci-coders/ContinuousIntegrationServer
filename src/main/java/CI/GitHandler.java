@@ -17,6 +17,7 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 import java.lang.Runtime;
+import java.text.SimpleDateFormat;
 
 /**
   * The GitHandler class handles a GitEvent object (see GitEvent class for more info).
@@ -50,6 +51,10 @@ public class GitHandler{
   */
   public PipelineResult request_push(){
       String message = "";
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS"); 
+      String buildstatus = 
+        "Pusher: " + G.getPusherName() + 
+        " Date: " + sdf.format(new Date()) + "<br>";
       PipelineResult result;
 
       // Creates a random number, used for folder name. Prevents duplicate issues.
@@ -86,11 +91,9 @@ public class GitHandler{
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
 	        result = PipelineResult.BUILD_FAILED;
       }
-      
       message += " Build folder: " + path + " Report located in: /build/reports/tests/test/index.html";  
-	    System.out.println(message);
-	    System.out.println("Sending notification...");
-      
+      System.out.println(message);
+      System.out.println("Sending notification...");
       if(send_notification(message)){
         System.out.println("Notification was sucessfully send");
       }else{
@@ -98,6 +101,9 @@ public class GitHandler{
 	      if (result == PipelineResult.SUCCESS)
 	          result = PipelineResult.NOTIFY_FAILED;
       }
+
+      buildstatus += message;
+      BuildLogger.setBuildStatus(""+identifier, buildstatus);
       return result;
   }
 

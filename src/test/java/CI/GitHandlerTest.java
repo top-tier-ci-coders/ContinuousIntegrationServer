@@ -46,6 +46,23 @@ public class GitHandlerTest {
   }
 
   /**
+  * Test that request_push() creates a log file.
+  * @author Marcus Östling
+  */
+  @Test
+  public void testRequestPushLog(){
+    GitEvent event = new GitEvent("","");
+    event.setBranchName("buildstestspass");
+    event.setPusherEmail("toptierci@gmail.com");
+    GitHandler gh = new GitHandler(event);
+
+    int before = BuildLogger.listBuilds().length;
+    gh.request_push();
+    int after = BuildLogger.listBuilds().length;
+    assertEquals(before+1, after);
+  }
+
+  /**
     * This tests the start_tests function in the GitHandler class.
     * @author Philippa Ö, Andreas G.
     */
