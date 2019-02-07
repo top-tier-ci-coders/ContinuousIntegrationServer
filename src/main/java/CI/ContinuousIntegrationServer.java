@@ -43,9 +43,9 @@ public class ContinuousIntegrationServer extends AbstractHandler
             System.out.println("LIST all build request.");
             String[] builds = BuildLogger.listBuilds();
             if(builds.length > 0) {
-              String allBuilds = "List of build ids:\n";
+              String allBuilds = "List of build ids:<br>";
               for(String s : builds) {
-                allBuilds += s + "\n";
+                allBuilds += s + "<br>";
               }
               try {
                   response.getWriter().println(allBuilds);
