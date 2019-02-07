@@ -15,15 +15,24 @@ import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 /** 
- *  Skeleton of a ContinuousIntegrationServer which acts as webhook
- *   See the Jetty documentation for API documentation of those classes.
- *   */
+ *  ContinuousIntegrationServer which acts as a webhook and
+ *  stores the history of builds.
+ */
 public class ContinuousIntegrationServer extends AbstractHandler
 {
 
-	/**
-    * Handles HTTP requests. Called by jetty.
-	  * @author Kartal Kaan Bozdoğan
+	  /**
+    *  Handles three different types of HTTP request:
+    *  - target = "/" and header X-GitHub-Event = "push"
+    *      This request will pull the branch mentioned in the payload,
+    *      build it, run its tests, email the results of the build
+    *      and tests to the one that made the push request,
+    *      and then store a log of the results.
+    *  - target = "/list"
+    *      Return a list of all build ids.
+    *  - target = "/<build id>"
+    *      Return the results of the specified build.
+	  * @author Kartal Kaan Bozdoğan and Marcus Östling
     * @param target - The target URL
 	  * @param baseRequest - The base request, as set by jetty
 	  * @param request - The http request
