@@ -31,7 +31,7 @@ public class GitHandlerTest {
     // Fail at test after build
     event.setBranchName("testsfail");
     boolean test3 = gh.request_push();
-    assertTrue(test3);  // Change this line to True in assesment for tests fail.
+    assertFalse(test3);  // Change this line to True in assesment for tests fail.
     // Fails at trying on branch that doesnt exist
     event.setBranchName("gdfngfdngkdfj4324732423");
     boolean test4 = gh.request_push();
