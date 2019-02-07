@@ -4,6 +4,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.*;
 
 public class GitHandlerTest {
 
@@ -55,7 +56,7 @@ public class GitHandlerTest {
      GitEvent event = new GitEvent("", "");
      event.setBranchName("buildstestspass");
      GitHandler gitHandler = new GitHandler(event);
-     String p = gitHandler.pull_branch();
+     String p = gitHandler.pull_branch(Math.abs(new Random().nextInt()));
 
      //We just pulled a branch so we should be able to run tests. Assert: True
      assertTrue(gitHandler.start_tests(p));
@@ -75,10 +76,10 @@ public class GitHandlerTest {
   public void testPullBranch(){
    GitEvent event = new GitEvent("", "");
    event.setBranchName("abranchthatdoesntexist"); // We can't pull a branch that doesn't exist
-   assertNull(new GitHandler(event).pull_branch());
+   assertNull(new GitHandler(event).pull_branch(Math.abs(new Random().nextInt())));
    event.setBranchName("buildstestspass");
    GitHandler gitHandler = new GitHandler(event);
-   String re = gitHandler.pull_branch();
+   String re = gitHandler.pull_branch(Math.abs(new Random().nextInt()));
    assertNotSame(null, re);
    // Also make sure the return is a correct path
    assertTrue(re.matches(".*/builds-CI/-?[0-9]+"));
@@ -105,12 +106,12 @@ public class GitHandlerTest {
 	// The branch "nobuild" shall not build
 	event.setBranchName("nobuild");
     GitHandler gitHandler = new GitHandler(event);
-	String path = gitHandler.pull_branch();
+	String path = gitHandler.pull_branch(Math.abs(new Random().nextInt()));
 	assertNotNull(path);
 	assertFalse(gitHandler.build_branch(path));
 	// The branch "testsfail" shall build
 	event.setBranchName("testsfail");
-	path = gitHandler.pull_branch();
+	path = gitHandler.pull_branch(Math.abs(new Random().nextInt()));
 	assertNotNull(path);
 	assertTrue(gitHandler.build_branch(path));
 	// A nonexisting folder shall not build

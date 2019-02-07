@@ -51,9 +51,14 @@ public class GitHandler{
   public PipelineResult request_push(){
       String message = "";
       PipelineResult result;
+
+      // Creates a random number, used for folder name. Prevents duplicate issues.
+      Random rn = new Random();
+      int identifier = Math.abs(rn.nextInt());
+
       // Try and pull the branch
       System.out.println("Pulling \"" + G.getBranchName() + "\"");
-      String path = pull_branch();
+      String path = pull_branch(identifier);
       if(path == null){
         message = "Failed to pull \"" + G.getBranchName() + "\", check that the branch name is correct.";
         send_notification(message);
@@ -65,29 +70,33 @@ public class GitHandler{
       // Execute the Test suite.
       if(build_branch(path)){
         // Try and start the test suite
-	System.out.println("Testing \"" + G.getBranchName() + "\"");
+	      System.out.println("Testing \"" + G.getBranchName() + "\"");
         if(start_tests(path)){
-          message = "Building the branch \""+ G.getBranchName() + "\" was successful, tests passed, check logs for results";
+          message = "Building the branch \""+ G.getBranchName() 
+              + "\" was successful, tests passed, check logs for results";
           result = PipelineResult.SUCCESS;
         }else{
-          message = "Building the branch \""+ G.getBranchName() + "\" was successful, but the tests failed, please check logs";
+          message = "Building the branch \""+ G.getBranchName() 
+              + "\" was successful, but the tests failed, please check logs";
           result = PipelineResult.TEST_FAILED;
         }
       }
       else{
           // Send notification that build failed
           message = "Build failed to complete on branch \""+ G.getBranchName() + "\", please check logs";
-	  result = PipelineResult.BUILD_FAILED;
+	        result = PipelineResult.BUILD_FAILED;
       }
-    message += " Build folder: " + path + " Report located in: /build/reports/tests/test/index.html";  
-	  System.out.println(message);
-	  System.out.println("Sending notification...");
+      
+      message += " Build folder: " + path + " Report located in: /build/reports/tests/test/index.html";  
+	    System.out.println(message);
+	    System.out.println("Sending notification...");
+      
       if(send_notification(message)){
         System.out.println("Notification was sucessfully send");
       }else{
         System.out.println("Notification could not be sent, failed");
-	if (result == PipelineResult.SUCCESS)
-	        result = PipelineResult.NOTIFY_FAILED;
+	      if (result == PipelineResult.SUCCESS)
+	          result = PipelineResult.NOTIFY_FAILED;
       }
       return result;
   }
@@ -97,10 +106,7 @@ public class GitHandler{
   * @author Andreas Gylling, Philippa Örnell
   * @return - The path to the pulled branch.
   */
-  public String pull_branch(){
-    // Creates a random number, used for folder name. Prevents duplicate issues.
-    Random rn = new Random();
-    int identifier = Math.abs(rn.nextInt());
+  public String pull_branch(int identifier){
 	System.out.println("Random identifier: " + String.valueOf(identifier));
     // URL to our CI repo
     String URL = "https://github.com/top-tier-ci-coders/ContinuousIntegrationServer.git";
