@@ -14,7 +14,7 @@ import java.nio.file.Files;
 public class GitEventTest {
 
     // Helper function used to return a file as a string
-    private static String readFile(String path, Charset encoding) throws IOException {
+    public static String readFile(String path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
     }
