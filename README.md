@@ -37,7 +37,13 @@ To build the project, run `./gradlew build`
 To run the project, run `./gradlew run`
 
 ### How compilation has been implemented and unit-tested.
-TODO
+The compilation is implemented in the class GitHandler and is triggered after a branch have
+been succesfully pulled. The compilation uses Java Runtime library to execute the terminal command
+`./gradlew build -x test` to build the branch without running the tests. 
+
+Using JUnit, the tests check so that a branch known to fail at build will fail, a branch known to build
+actually builds and that a incorrect path fails to build.
+
 ### How test execution has been implemented and unit-tested
 Test execution is made in the class GitHandler with corresponding test code in GitHandlerTest. We used Java Runtime library to execute terminal commands. We wrote mostly bash commands as we save the build in a separate build folder. The commands execute Gradle commands in order to either build or test the branch.
 
