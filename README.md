@@ -51,6 +51,7 @@ Notification was made using JavaMail API and Gmail SMTP server. A gmail account 
 ### Andreas Gylling:
 Implemented request_push, pull_branch,start_tests in the GitHandler class and corresponding test cases in the GitHandlerTest class. Also created skeleton for the GitHandler class. Documentation and reviewing code.
 ### Gustaf Pihl:
+Implemented the classes GitEvent, GitEventTest, BuildLogger and BuildLoggerTest. The GitEvent class parses and stores relevant information from the json payload sent by git. The BuildLogger class handles logging of builds. Documentation and code review.
 ### Philippa Örnell:
 Implemented pull_branch, start_tests (pair programmed with Andreas) in the GitHandler class and corresponding test cases in the GitHandlerTest class. Documentation and reviewing code. Also assisted in solving the email notification.
 ### Marcus Östling:
