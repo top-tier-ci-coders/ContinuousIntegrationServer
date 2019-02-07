@@ -22,20 +22,26 @@ public class GitHandlerTest {
     event.setBranchName("buildstestspass");
     event.setPusherEmail("toptierci@gmail.com");
     GitHandler gh = new GitHandler(event);
-    boolean test1 = gh.request_push();
-    assertTrue(test1);
+    PipelineResult result = gh.request_push();
+    assertEquals(result, PipelineResult.SUCCESS);
     // Fail already at build.
     event.setBranchName("nobuild");
-    boolean test2 = gh.request_push();
-    assertFalse(test2);
+    result = gh.request_push();
+    assertEquals(result, PipelineResult.BUILD_FAILED);
     // Fail at test after build
     event.setBranchName("testsfail");
-    boolean test3 = gh.request_push();
-    assertFalse(test3);
+    result = gh.request_push();
+    assertEquals(result, PipelineResult.TEST_FAILED);
     // Fails at trying on branch that doesnt exist
     event.setBranchName("gdfngfdngkdfj4324732423");
-    boolean test4 = gh.request_push();
-    assertFalse(test4);
+    result = gh.request_push();
+    assertEquals(result, PipelineResult.PULL_FAILED);
+    // Fails to send notification to an invalid email address
+    event.setBranchName("buildstestspass");
+    event.setPusherEmail("toptie rci gmail.com");
+    result = gh.request_push();
+    assertEquals(result, PipelineResult.NOTIFY_FAILED);
+
   }
 
   /**
