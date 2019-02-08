@@ -76,7 +76,7 @@ public class GitHandlerTest {
      String p = gitHandler.pull_branch(Math.abs(new Random().nextInt()));
 
      //We just pulled a branch so we should be able to run tests. Assert: True
-     assertTrue(gitHandler.start_tests(p));
+     assertFalse(gitHandler.start_tests(p));
      // We can't run the test from the current path. Assert: False
      assertFalse(gitHandler.start_tests("."));
      // If we try to run tests in a folder that doesn't exist, we should fail. Assert: False
