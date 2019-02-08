@@ -2,6 +2,8 @@
 
 ### What is the project about?
 
+test
+
 ContinuousIntegrationServer is a small continuous integration CI server.
 
 ### How does it work?
