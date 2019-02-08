@@ -37,13 +37,12 @@ To build the project, run `./gradlew build`
 To run the project, run `./gradlew run`
 
 ### How compilation has been implemented and unit-tested.
-The compilation is implemented in the class GitHandler and is triggered after a branch have
-been succesfully pulled. The compilation uses Java Runtime library to execute the terminal command
-`./gradlew build -x test` to build the branch without running the tests. 
-
-Using JUnit, the tests check so that a branch known to fail at build will fail, a branch known to build
-actually builds and that a incorrect path fails to build.
-
+Compilation is handled by GitHandler.build_branch and is triggered after a branch have been successfully pulled.
+Since we use gradle in our project, it merely executes the command "gradlew build -x test" to build the branch without running the tests and compares the result to 0 to see whether it succeeded.
+Compilation is unit tested in GitHandlerTest.testBuildBranch
+The test tries to pull and build the branches "nobuild" and "testsfail". Both of these branches are dummy branches that have been created specifically for unit tests.
+The branch "nobuild" has compilation errors, whereas the branch "testsfail" builds properly, but fails its own tests.
+The test also checks that an incorrect path fails to build.
 ### How test execution has been implemented and unit-tested
 Test execution is made in the class GitHandler with corresponding test code in GitHandlerTest. We used Java Runtime library to execute terminal commands. We wrote mostly bash commands as we save the build in a separate build folder. The commands execute Gradle commands in order to either build or test the branch.
 
@@ -51,6 +50,10 @@ For unit testing, JUnit is used. We try several scenarios of successful and unsu
 
 ### How notification has been implemented and unit-tested.
 Notification was made using JavaMail API and Gmail SMTP server. A gmail account called toptierci was created and used for sending notifications to the pusher. The server is also notified in its terminal about the push.
+The function that send the email ("send_nofitication") is tested in GitHandlerTest.testSendNotificationSuccess and GitHandlerTest.testSendNotificationFail. The former sends a specific email to a specific email address and makes sure that the email was sent. The latter tries to send an email to a malformed address and makes sure that it fails.
+
+### The Build List URL
+To see a list of all builds so far, visit [http://27e4b890.ngrok.io/list](http://27e4b890.ngrok.io/list)
 
 ## Statement of contributions
 ### Kartal Bozdogan:
