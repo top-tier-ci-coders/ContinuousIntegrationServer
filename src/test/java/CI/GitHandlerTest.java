@@ -141,7 +141,7 @@ public class GitHandlerTest {
    */
   @Test
   public void testSendNotificationSuccess() {
-	/*String jsonStr = null;
+	String jsonStr = null;
 	try {
 		jsonStr = GitEventTest.readFile("./src/test/java/CI/jsonStr", Charset.defaultCharset());
     }
@@ -154,7 +154,7 @@ public class GitHandlerTest {
     event.setPusherEmail("bozdogan@kth.se");
     event.setBranchName("Mail test");
     GitHandler gitHandler = new GitHandler(event);
-    assertTrue(gitHandler.send_notification("Testing... Testing..."));*/
+    assertTrue(gitHandler.send_notification("Testing... Testing..."));
  }
 
   /**
