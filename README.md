@@ -52,7 +52,7 @@ Notification was made using JavaMail API and Gmail SMTP server. A gmail account 
 The function that send the email ("send_nofitication") is tested in GitHandlerTest.testSendNotificationSuccess and GitHandlerTest.testSendNotificationFail. The former sends a specific email to a specific email address and makes sure that the email was sent. The latter tries to send an email to a malformed address and makes sure that it fails.
 
 ### The Build List URL
-To see a list of all builds so far, visit [/list](/list)
+To see a list of all builds so far, visit [http://27e4b890.ngrok.io/list](http://27e4b890.ngrok.io/list)
 
 ## Statement of contributions
 ### Kartal Bozdogan:
