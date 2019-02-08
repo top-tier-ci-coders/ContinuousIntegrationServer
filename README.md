@@ -37,11 +37,12 @@ To build the project, run `./gradlew build`
 To run the project, run `./gradlew run`
 
 ### How compilation has been implemented and unit-tested.
-Compilation is handled by GitHandler.build_branch
-Since we use gradle in our project, it merely executes the command "gradlew build -x test" and compares the result to 0 to see whether it succeeded.
+Compilation is handled by GitHandler.build_branch and is triggered after a branch have been successfully pulled.
+Since we use gradle in our project, it merely executes the command "gradlew build -x test" to build the branch without running the tests and compares the result to 0 to see whether it succeeded.
 Compilation is unit tested in GitHandlerTest.testBuildBranch
 The test tries to pull and build the branches "nobuild" and "testsfail". Both of these branches are dummy branches that have been created specifically for unit tests.
 The branch "nobuild" has compilation errors, whereas the branch "testsfail" builds properly, but fails its own tests.
+The test also checks that an incorrect path fails to build.
 ### How test execution has been implemented and unit-tested
 Test execution is made in the class GitHandler with corresponding test code in GitHandlerTest. We used Java Runtime library to execute terminal commands. We wrote mostly bash commands as we save the build in a separate build folder. The commands execute Gradle commands in order to either build or test the branch.
 
@@ -64,3 +65,4 @@ Implemented the classes GitEvent, GitEventTest, BuildLogger and BuildLoggerTest.
 ### Philippa Örnell:
 Implemented pull_branch, start_tests (pair programmed with Andreas) in the GitHandler class and corresponding test cases in the GitHandlerTest class. Documentation and reviewing code. Also assisted in solving the email notification.
 ### Marcus Östling:
+Set up gradle project, added travis ci to git repo and set up a server on a Raspberry pi model 1, the server was in the end to slow to actually use. Wrote build_branch function. Wrote the parts of handle() that handles targets /list and /<build id> 
